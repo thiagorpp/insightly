@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no" />
+    <link rel="stylesheet" href="angular-material/angular-material.css">
+</head>
+	<body ng-app="insightlyApp">
+
+	<div ng-controller="mainController" layout="column">
+		<md-toolbar>
+	    <div class="md-toolbar-tools">
+	      <h3>
+	        <span>Insightly contacts integration</span>
+	      </h3>
+	    </div>
+	  </md-toolbar>
+		<div layout="row" layout-xs="column">
+			<md-sidenav class="md-sidenav-left md-whiteframe-z2" md-component-id="left" md-is-locked-open="$mdMedia('gt-md')" style="height:2000px;">
+	      <md-content layout-padding>
+					<div ng-show="loading" layout="row" layout-sm="column" layout-align="space-around">
+				    <md-progress-circular md-mode="indeterminate"></md-progress-circular>
+				  </div>
+					<md-list ng-show="!loading" height="100%">
+			      <md-subheader class="md-no-sticky">Contact list</md-subheader>
+			      <md-list-item class="md-3-line" ng-repeat="contact in contacts">
+			        <img ng-src="{{contact.IMAGE_URL}}" onerror="this.src='assets/user-default.png'" class="md-avatar" >
+			        <div class="md-list-item-text" layout="column">
+			          <h3>{{ contact.FIRST_NAME }} {{ contact.LAST_NAME }}</h3>
+			          <p>ID: {{ contact.CONTACT_ID }}</p>
+								<div ng-repeat="info in contact.CONTACTINFOS">
+				          <p>{{info.DETAIL }}</p>
+				        </div>
+			        </div>
+
+			      </md-list-item>
+			      <md-divider ></md-divider>
+			    </md-list>
+	      </md-content>
+	    </md-sidenav>
+    	<div flex="100">
+				<md-content class="md-padding">
+					<form name="apiKeyForm" ng-show="!validKey">
+						<md-input-container class="md-block">
+							 <label>Insightly API key</label>
+							 <input required name="apikey" ng-model="api.key">
+							 <div ng-messages="apikey.$error">
+									<div ng-message="required">This is required.</div>
+							 </div>
+						</md-input-container>
+						<md-button md-no-ink class="md-primary" ng-click="getContactList()">Change</md-button>
+					</form>
+
+					<form name="contactForm" ng-show="validKey">
+						 <md-input-container class="md-block">
+								<label>First Name</label>
+								<input required name="firstName" ng-model="contact.FIRST_NAME">
+								<div ng-messages="contact.firstName.$error">
+									 <div ng-message="required">This is required.</div>
+								</div>
+						 </md-input-container>
+						 <md-input-container class="md-block">
+								<label>Last Name</label>
+								<input required name="lastName" ng-model="contact.LAST_NAME">
+								<div ng-messages="contact.lastName.$error">
+									 <div ng-message="required">This is required.</div>
+								</div>
+						 </md-input-container>
+						 <md-input-container class="md-block">
+								<label>Email</label>
+								<input required name="email" ng-model="contact.CONTACTINFOS[0].DETAIL">
+								<div ng-messages="contact.email.$error">
+									 <div ng-message="required">This is required.</div>
+								</div>
+						 </md-input-container>
+						 <md-input-container class="md-block">
+								<label>Phone</label>
+								<input required name="phone" ng-model="contact.CONTACTINFOS[1].DETAIL">
+								<div ng-messages="contact.phone.$error">
+									 <div ng-message="required">This is required.</div>
+								</div>
+						 </md-input-container>
+						 <md-button type="submit" md-no-ink class="md-primary" ng-click="createContact()">Create Contact</md-button>
+					</form>
+				</md-content>
+			</div>
+    </div>
+	</div>
+
+	<script src="angular/angular.js"></script>
+	<script src="angular-aria/angular-aria.js"></script>
+	<script src="angular-animate/angular-animate.js"></script>
+	<script src="angular-material/angular-material.js"></script>
+
+
+	<script src="js/controllers/main.js"></script>
+	<script src="js/services/contacts.js"></script>
+	<script src="js/core.js"></script>
+</body>
+</html>
